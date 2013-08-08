@@ -43,6 +43,16 @@
 #define snprintf _snprintf_s
 #define strncpy strncpy_s
 //#define localtime localtime_s
-#endif  
+#endif
+
+#ifndef _MSC_VER
+#define INVALID_SOCKET -1
+#endif
+
+class ServerOs
+{
+public:
+	int Init();
+};
 
 #endif //WEB_SERVER_OS_H_

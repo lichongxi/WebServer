@@ -5,7 +5,7 @@ THREAD_MUTEX_T ServerLog::log_lock_;
 ServerLog *ServerLog::instance_;
 char ServerLog::path_file_[SERVER_MAX_PATH + 1];
 FILE *ServerLog::log_file_;
-int ServerLog::Init(char *file_name)
+int ServerLog::Init(const char *file_name)
 {
 	if (file_name == NULL) {
 		return -2;
@@ -27,6 +27,9 @@ int ServerLog::AddLog(const char *format, ...)
 {
 	if (instance_->log_file_ == NULL) {
 		return -1;
+	}
+	if (format == NULL) {
+		return -2;
 	}
 	char buf[buff_size];
 	char buftime[128];

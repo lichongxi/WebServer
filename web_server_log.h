@@ -8,7 +8,7 @@ class ServerLog
 {
 public:
 	static int AddLog(const char *farmot, ...);
-	static int Init(char *file_name);
+	static int Init(const char *file_name);
 	~ServerLog();
 private:
 	ServerLog(){};

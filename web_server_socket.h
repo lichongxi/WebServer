@@ -9,6 +9,7 @@ class ServerSocket
 public:
 	ServerSocket();
 	int Init();
+	int Run();
 	void set_addr(char *ip, int port);
 	void set_addr(int port);
 private:
