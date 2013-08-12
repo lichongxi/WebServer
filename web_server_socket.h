@@ -9,11 +9,16 @@ class ServerSocket
 public:
 	ServerSocket();
 	int Init();
-	int Run();
+	int Accept();
+	size_t SocketSend(SOCK_FD sock, const char *buff, int len);
+	size_t SocketRecv(SOCK_FD sock, char *buff, int len);
 	void set_addr(char *ip, int port);
 	void set_addr(int port);
+	void set_listen_num(int num);
 private:
 	sockaddr_in addr_;
+	int listen_num_;
+	THREAD_MUTEX_T lock_;
 	SOCK_FD socket_;
 	DISALLOW_COPY_AND_ASSIGN(ServerSocket);
 };

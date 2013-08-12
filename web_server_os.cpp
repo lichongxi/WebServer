@@ -11,4 +11,17 @@ int ServerOs::Init()
 		return -1;
 	}
 #endif
+	return 0;
+}
+
+int ServerOs::ThreadCreate(void *start_addr, void *arglist, unsigned *thrdaddr)
+{
+#ifdef _MSC_VER
+	uintptr_t result = _beginthreadex(NULL, 0, (unsigned int (__stdcall *)(void *))start_addr, arglist, 0, thrdaddr);
+	if (result == NULL) {
+		return -1;
+	}
+	return result;
+#endif
+	return 0;
 }

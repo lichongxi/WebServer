@@ -7,6 +7,7 @@
 #pragma comment(lib,"WS2_32")
 #include <WinSock2.h>
 #include <Windows.h>
+#include <process.h>
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -53,6 +54,7 @@ class ServerOs
 {
 public:
 	int Init();
+	static int ThreadCreate(void *start_addr, void *arglist, unsigned *thrdaddr);
 };
 
 #endif //WEB_SERVER_OS_H_

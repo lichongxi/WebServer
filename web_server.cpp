@@ -10,7 +10,7 @@ int main(void)
 	ServerSocket *server_socket = new ServerSocket();
 	server_socket->Init();
 	server_socket->set_addr(8080);
-	server_socket->Run();
+	server_socket->Accept();
 
 	system("pause");
 	return 0;
