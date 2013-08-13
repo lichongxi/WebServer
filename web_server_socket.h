@@ -18,7 +18,6 @@ public:
 private:
 	sockaddr_in addr_;
 	int listen_num_;
-	THREAD_MUTEX_T lock_;
 	SOCK_FD socket_;
 	DISALLOW_COPY_AND_ASSIGN(ServerSocket);
 };
