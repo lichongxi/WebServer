@@ -1,6 +1,5 @@
 #include "web_server_os.h"
 #include "web_server_log.h"
-
 int ServerOs::Init()
 {
 #ifdef _MSC_VER
@@ -24,4 +23,23 @@ int ServerOs::ThreadCreate(void *start_addr, void *arglist, unsigned *thrdaddr)
 	return result;
 #endif
 	return 0;
+}
+SemaphoreCondition::SemaphoreCondition()
+{
+	Semaphore_ = CreateSemaphore(NULL, 0, 1, NULL);
+};
+
+void SemaphoreCondition::Wait()
+{
+	WaitForSingleObject(Semaphore_, INFINITE);
+}
+
+void SemaphoreCondition::Signal()
+{
+	ReleaseSemaphore(Semaphore_, 1, NULL);
+}
+
+SemaphoreCondition::~SemaphoreCondition()
+{
+	CloseHandle(Semaphore_);
 }

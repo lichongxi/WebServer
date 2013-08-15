@@ -1,8 +1,11 @@
 #ifndef WEB_SERVER_OS_H_
 #define WEB_SERVER_OS_H_
 
+#include "web_server_tools.h"
+
 #include <string>
 #include <cstdio>
+#include <assert.h>
 #ifdef _MSC_VER
 #pragma comment(lib,"WS2_32")
 #include <WinSock2.h>
@@ -41,6 +44,12 @@
 #endif
 
 #ifdef _MSC_VER
+#define SecondSleep(x) Sleep(x * 1000)
+#else
+#define SecondSleep(x) sleep(x)
+#endif
+
+#ifdef _MSC_VER
 #define snprintf _snprintf_s
 #define strncpy strncpy_s
 //#define localtime localtime_s
@@ -55,6 +64,18 @@ class ServerOs
 public:
 	int Init();
 	static int ThreadCreate(void *start_addr, void *arglist, unsigned *thrdaddr);
+};
+
+class SemaphoreCondition
+{
+public:
+	SemaphoreCondition();
+	~SemaphoreCondition();
+	void Signal();
+	void Wait();
+private:
+	HANDLE Semaphore_;
+	DISALLOW_COPY_AND_ASSIGN(SemaphoreCondition);
 };
 
 #endif //WEB_SERVER_OS_H_

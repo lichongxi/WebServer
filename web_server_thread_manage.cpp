@@ -2,13 +2,21 @@
 
 ThreadManage::ThreadManage()
 {
-	thread_num_ = 10;
-	pool_ = new ThreadPool(thread_num_);
+	thread_num_ = 20;
 }
-ThreadManage::ThreadManage(int num)
+ThreadManage::ThreadManage(int thread_num)
 {
-	thread_num_ = num;
-	pool_ = new ThreadPool(thread_num_);
+	thread_num_ = thread_num;
+}
+int ThreadManage::Init()
+{
+	pool_ = new ThreadPool();
+	if (pool_ == NULL) {
+		return -1;
+	}
+	pool_->set_init_num(thread_num_);
+	pool_->Init();
+	return 0;
 }
 ThreadManage::~ThreadManage()
 {
@@ -17,13 +25,13 @@ ThreadManage::~ThreadManage()
 		delete pool_;
 	}
 }
-void ThreadManage::SetParallelNum(int num)
+void ThreadManage::set_thread_num(int thread_num)
 {
-	thread_num_ = num;
+	thread_num_ = thread_num;
 }
-void ThreadManage::Run(Job* job,void* jobdata)
+void ThreadManage::Run(WebTask* task,void* data)
 {
-	pool_->Run(job,jobdata);
+	pool_->Run(task, data);
 }
 void ThreadManage::TerminateAll(void)
 {
