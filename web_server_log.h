@@ -4,6 +4,8 @@
 #include "web_server_tools.h"
 #include "web_server_os.h"
 
+#define LOG printf
+
 class ServerLog
 {
 public:

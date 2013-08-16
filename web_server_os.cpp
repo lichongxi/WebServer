@@ -26,7 +26,7 @@ int ServerOs::ThreadCreate(void *start_addr, void *arglist, unsigned *thrdaddr)
 }
 SemaphoreCondition::SemaphoreCondition()
 {
-	Semaphore_ = CreateSemaphore(NULL, 0, 1, NULL);
+	Semaphore_ = CreateSemaphore(NULL, 0, 100, NULL);
 };
 
 void SemaphoreCondition::Wait()

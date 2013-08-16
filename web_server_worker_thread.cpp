@@ -2,6 +2,14 @@
 #include "web_server_thread_pool.h"
 #include "web_server_web_task.h"
 
+WorkerThread::WorkerThread()
+{
+	THREAD_MUTEX_INIT(&var_mutex_);
+	task_ = NULL;
+	task_data_ = NULL;
+	thread_pool_ = NULL;
+	is_end_ = false;
+}
 bool WorkerThread::Start()
 {
 	ServerOs::ThreadCreate(ThreadFunction, this, &thread_id_);
@@ -13,17 +21,13 @@ void *WorkerThread::ThreadFunction(void *thread)
 	this_thread->Run();
 	return NULL;
 }
-bool WorkerThread::Join()
+bool WorkerThread::Exit()
 {
+	if (is_end_ == false) {
+		is_end_ = true;
+		task_cond_.Signal();
+	}
 	return true;
-}
-WorkerThread::WorkerThread()
-{
-	THREAD_MUTEX_INIT(&var_mutex_);
-	task_ = NULL;
-	task_data_ = NULL;
-	thread_pool_ = NULL;
-	is_end_ = false;
 }
 
 WorkerThread::~WorkerThread()
@@ -31,16 +35,18 @@ WorkerThread::~WorkerThread()
 	THREAD_MUTEX_DESTROY(&var_mutex_);
 	if(NULL != task_)
 		delete task_;
-	if(thread_pool_ != NULL)
-		delete thread_pool_;
 }
 void WorkerThread::Run()
 {
 	set_thread_state(THREAD_BUSY);
-	for(;;)
+	while(true)
 	{
-		while(task_ == NULL)
+		while(task_ == NULL && is_end_ == false) {
 			task_cond_.Wait();
+		}
+		if (is_end_ == true) {
+			break;
+		}
 		task_->Run(task_data_);
 		task_->set_work_thread(NULL);
 		task_ = NULL;
@@ -50,17 +56,13 @@ void WorkerThread::Run()
 
 void WorkerThread::set_task(WebTask* task,void* task_data)
 {
-	THREAD_MUTEX_LOCK(&var_mutex_);
 	task->set_work_thread(this);
 	task_ = task;
 	task_data_ = task_data;
-	THREAD_MUTEX_UNLOCK(&var_mutex_);
 	task_cond_.Signal();
 }
 
 void WorkerThread::set_thread_pool(ThreadPool* thrpool)
 {
-	THREAD_MUTEX_LOCK(&var_mutex_);
 	thread_pool_ = thrpool;
-	THREAD_MUTEX_UNLOCK(&var_mutex_);
 }

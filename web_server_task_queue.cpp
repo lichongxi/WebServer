@@ -3,13 +3,19 @@
 #include "web_server_thread_pool.h"
 TaskQueue::TaskQueue()
 {
+	thread_pool_ = NULL;
+
 	queue_len_ = 100;
 	hight_num_ = 60;
 	low_num_ = 5;
-	isopen_resize_ = true;
 	check_interval_ = 1;
 	minus_num_ = 10;
-	thread_pool_ = NULL;
+	
+	pool_level_ = 0;
+	pool_range_ = NULL;
+	pool_range_num = 0;
+	is_close_ = false;
+	isopen_resize_ = true;
 	THREAD_MUTEX_INIT(&queue_mutex_);
 }
 TaskQueue::~TaskQueue()
@@ -19,7 +25,9 @@ TaskQueue::~TaskQueue()
 int TaskQueue::Init()
 {
 	thread_pool_ = new ThreadPool();
-	thread_pool_->set_init_num(20);
+	if (pool_level_ != 0) {
+		thread_pool_->set_size_range(pool_level_, pool_range_, pool_range_num);
+	}
 	thread_pool_->Init();
 	if (thread_pool_ == NULL) {
 		return -1;
@@ -30,12 +38,20 @@ int TaskQueue::Init()
 	}
 	return 0;
 }
+void TaskQueue::TerminateAll()
+{
+	is_close_ = true;
+	thread_pool_->TerminateAll();
+}
 int TaskQueue::AddTask(WebTask *task, void *data)
 {
+	if (is_close_) {
+		return -1;
+	}
 	int task_size = task_queue_.size();
 	if (task_size > queue_len_) {
-		ServerLog::AddLog("too many task num=%d\n", task_size);
-		return -1;
+		LOG("too many task num=%d\n", task_size);
+		return -2;
 	}
 	TaskData task_data;
 	task_data.web_task_ = task;
@@ -82,7 +98,7 @@ int TaskQueue::CheckQueueLen()
 			thread_pool_->Resize(RESIZE_PLUS);
 			hit_minus_ = 0;
 		}
-		else if (queue_size < low_num_ && thread_pool_->GetBusyNum() < thread_pool_->GetAllNum()/2)
+		else if (queue_size < low_num_ && thread_pool_->IsMinus())
 		{
 			if (++hit_minus_ == minus_num_) {
 				thread_pool_->Resize(RESIZE_MINUS);

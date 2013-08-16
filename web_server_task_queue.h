@@ -19,17 +19,23 @@ public:
 	TaskQueue();
 	~TaskQueue();
 	void set_queue_len(int len) {queue_len_ = len;}
-	void set_thread_pool(ThreadPool *thread_pool) {thread_pool_ = thread_pool;}
 	void set_check_interval(int second) {check_interval_ = second;}
 	void set_minus_num(int num) {minus_num_ = num;}
 	void set_isopen_resize(bool is_open) {isopen_resize_ = is_open;}
-	int AddTask(WebTask *task, void *data);
-	int PushToPool();
+	void set_pool_range(int level, int *range, int num) {pool_level_ = level;pool_range_ = range; pool_range_num = num;}
 	int Init();
-	int CheckQueueLen();
+	int AddTask(WebTask *task, void *data);
+	void TerminateAll();
 private:
 	static void *ThreadPushToPool(void *class_p);
 	static void *ThreadCheckQueueLen(void *class_p);
+	void set_thread_pool(ThreadPool *thread_pool) {thread_pool_ = thread_pool;}
+	int PushToPool();
+	int CheckQueueLen();
+	int pool_level_;
+	int *pool_range_;
+	int pool_range_num;
+	bool is_close_;
 	SemaphoreCondition queue_cond_;
 	THREAD_MUTEX_T queue_mutex_;
 	std::queue<TaskData> task_queue_;

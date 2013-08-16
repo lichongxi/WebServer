@@ -47,7 +47,7 @@ size_t ServerSocket::SocketSend(SOCK_FD sock, const char *buff, int len)
 {
 	size_t send_size = send(socket_, buff, len, 0);
 	if (send_size == -1) {
-		ServerLog::AddLog("send error\n");
+		LOG("send error\n");
 	}
 	return send_size;
 }
@@ -55,22 +55,22 @@ size_t ServerSocket::SocketRecv(SOCK_FD sock, char *buff, int len)
 {
 	size_t recv_size = recv(socket_, buff, len, 0);
 	if (recv_size == -1) {
-		ServerLog::AddLog("recv error\n");
+		LOG("recv error\n");
 	}
 	return recv_size;
 }
 int ServerSocket::Init()
 {
 	if((socket_ = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
-		ServerLog::AddLog("create socket failed\n");
+		LOG("create socket failed\n");
 		return -1;
 	}
 	if(bind(socket_, (sockaddr *)&addr_, sizeof(struct sockaddr_in)) == -1) {
-		ServerLog::AddLog("bind fail\n");
+		LOG("bind fail\n");
 		return -2;
 	}
 	if(listen(socket_, listen_num_) == -1) {
-		ServerLog::AddLog("listen fail\n");
+		LOG("listen fail\n");
 		return -3;
 	}
 	return 0;

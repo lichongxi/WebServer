@@ -42,8 +42,8 @@ int ServerLog::AddLog(const char *format, ...)
 	va_start(args, format);
 
 	THREAD_MUTEX_LOCK(&instance_->log_lock_);
-	//vfprintf(instance_->log_file_, buf, args);
-	printf(buf, args);
+	vfprintf(instance_->log_file_, buf, args);
+	//printf(buf, args);
 	fflush(instance_->log_file_);
 	THREAD_MUTEX_UNLOCK(&instance_->log_lock_);
 

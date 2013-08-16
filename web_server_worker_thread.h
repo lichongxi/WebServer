@@ -1,5 +1,6 @@
 #ifndef WEB_SERVER_WORKER_THREAD_H_
 #define WEB_SERVER_WORKER_THREAD_H_
+#include "web_server_tools.h"
 #include "web_server_os.h"
 #include "web_server_web_task.h"
 class ThreadPool;
@@ -51,6 +52,7 @@ public:
 	virtual ~WorkerThread();
 	void Run();
 	bool Start(void);
+	bool Exit(void);
 	bool Join(void);
 	void set_thread_state(ThreadState state){thread_state_ = state;}
 	void set_task(WebTask* task,void* task_data);
@@ -68,6 +70,6 @@ private:
 	THREAD_MUTEX_T var_mutex_;
 	bool is_end_;
 	static void* ThreadFunction(void*);
-
+	DISALLOW_COPY_AND_ASSIGN(WorkerThread);
 };
 #endif //WEB_SERVER_WORKER_THREAD_H_
