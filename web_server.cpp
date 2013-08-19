@@ -22,8 +22,8 @@ public:
 	HttpWask(){}
 	~HttpWask(){}
 	void Run(void* task_data) {
-		
-
+        send(client_fd_, (char *)task_data, 16, 0);
+        closesocket(client_fd_);
 	}
 	void set_client_fd(SOCKET client_fd){client_fd_ = client_fd;}
 private:
@@ -48,9 +48,9 @@ int main(void)
 	while(true)
 	{
 		int client_fd = server_socket->Accept();
-		HttpWask* task = new HttpWask();
-		task->set_client_fd(client_fd);
-		task_queue->AddTask(task, pbFile);
+		//HttpWask* task = new HttpWask();
+		//task->set_client_fd(client_fd);
+		//task_queue->AddTask(task, pbFile);
 		printf("i=%d\n", ++i);
 	}
 
