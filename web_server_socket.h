@@ -12,7 +12,7 @@ public:
 	SOCKET Accept();
 	static size_t SocketSend(SOCK_FD sock, const char *buff, int len);
 	static size_t SocketRecv(SOCK_FD sock, char *buff, int len);
-	void set_addr(char *ip, int port);
+	void set_addr(const char *ip, int port);
 	void set_addr(int port);
 	void set_listen_num(int num);
 private:

@@ -29,7 +29,7 @@ ServerSocket::ServerSocket()
 	addr_.sin_family = AF_INET;
 	listen_num_ = 5000;
 }
-void ServerSocket::set_addr(char *ip, int port)
+void ServerSocket::set_addr(const char *ip, int port)
 {
 	addr_.sin_addr.s_addr = inet_addr(ip);
 	addr_.sin_port = htons(port);
@@ -80,11 +80,9 @@ SOCKET ServerSocket::Accept()
 {
 	int sin_size = sizeof(struct sockaddr_in);
 	sockaddr_in c_addr;
-	SOCKET client_socket;
-
-	client_socket = accept(socket_, (struct sockaddr *)&c_addr, &sin_size);
+	int client_socket = accept(socket_, (struct sockaddr *)&c_addr, &sin_size);
 	if (client_socket == -1) {
-        LOG("accept error %d.\n", WSAGetLastError());
+		LOG("accept fail\n");
 	}
-    return client_socket;
+	return client_socket;
 }
