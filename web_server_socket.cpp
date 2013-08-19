@@ -29,7 +29,7 @@ ServerSocket::ServerSocket()
 	addr_.sin_family = AF_INET;
 	listen_num_ = 2000;
 }
-void ServerSocket::set_addr(char *ip, int port)
+void ServerSocket::set_addr(const char *ip, int port)
 {
 	addr_.sin_addr.s_addr = inet_addr(ip);
 	addr_.sin_port = htons(port);
@@ -45,7 +45,7 @@ void ServerSocket::set_listen_num(int num)
 }
 size_t ServerSocket::SocketSend(SOCK_FD sock, const char *buff, int len)
 {
-	size_t send_size = send(socket_, buff, len, 0);
+	size_t send_size = send(sock, buff, len, 0);
 	if (send_size == -1) {
 		LOG("send error\n");
 	}
@@ -53,7 +53,7 @@ size_t ServerSocket::SocketSend(SOCK_FD sock, const char *buff, int len)
 }
 size_t ServerSocket::SocketRecv(SOCK_FD sock, char *buff, int len)
 {
-	size_t recv_size = recv(socket_, buff, len, 0);
+	size_t recv_size = recv(sock, buff, len, 0);
 	if (recv_size == -1) {
 		LOG("recv error\n");
 	}
@@ -80,11 +80,9 @@ int ServerSocket::Accept()
 {
 	int sin_size = sizeof(struct sockaddr_in);
 	sockaddr_in c_addr;
-	int client_socket;
-
-	while (1) {
-		client_socket = accept(socket_, (struct sockaddr *)&c_addr, &sin_size);
-		if (client_socket != -1) {
-		}
+	int client_socket = accept(socket_, (struct sockaddr *)&c_addr, &sin_size);
+	if (client_socket == -1) {
+		LOG("accept fail\n");
 	}
+	return client_socket;
 }

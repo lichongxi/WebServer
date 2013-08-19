@@ -19,17 +19,26 @@ long GetFileSize(char *filename)
 class HttpWask : public WebTask
 {
 public:
-	HttpWask(){}
+	HttpWask():http_status_(0){}
 	~HttpWask(){}
 	void Run(void* task_data) {
-		
+		bool is_keep_live = false;
+		do 
+		{
+			RecvHttpServletRequest();
+		} while (is_keep_live);
 
 	}
 	void set_client_fd(SOCKET client_fd){client_fd_ = client_fd;}
 private:
+	void RecvHttpServletRequest();
+	int http_status_;
 	SOCKET client_fd_;
 };
+void HttpWask::RecvHttpServletRequest()
+{
 
+}
 int main(void)
 {
 	ServerLog::Init("webServer.dat");
@@ -38,7 +47,7 @@ int main(void)
 	TaskQueue* task_queue = new TaskQueue();
 	task_queue->Init();
 	ServerSocket *server_socket = new ServerSocket();
-	server_socket->set_addr(8080);
+	server_socket->set_addr("127.0.0.1", 8081);
 	server_socket->Init();
 	HANDLE hFile = CreateFile("server.html", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	HANDLE hMapFile = CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
