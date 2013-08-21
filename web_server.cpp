@@ -22,7 +22,6 @@ public:
 		{
 			RecvHttpServletRequest();
 		} while (is_keep_live_);
-
 	}
 	void set_recv_buff_len(int len){recv_buff_len_ = len;}
 	void set_client_fd(SOCKET client_fd){client_fd_ = client_fd;}

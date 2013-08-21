@@ -27,7 +27,7 @@ ServerSocket::ServerSocket()
 	socket_ = 0;
 	SET_ZERO(&addr_, sizeof(addr_));
 	addr_.sin_family = AF_INET;
-	listen_num_ = 2000;
+	listen_num_ = 5000;
 }
 void ServerSocket::set_addr(const char *ip, int port)
 {
@@ -76,7 +76,7 @@ int ServerSocket::Init()
 	return 0;
 }
 
-int ServerSocket::Accept()
+SOCKET ServerSocket::Accept()
 {
 	int sin_size = sizeof(struct sockaddr_in);
 	sockaddr_in c_addr;
