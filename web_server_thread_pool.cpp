@@ -66,15 +66,14 @@ WorkerThread* ThreadPool::GetIdleThread(void)
 		idle_cond_.Wait();
 	}
 	THREAD_MUTEX_LOCK(&idle_mutex_);
+	WorkerThread* thr = NULL;
 	if(idle_list_.size() > 0)
 	{
-		WorkerThread* thr = (WorkerThread*)idle_list_.front();
+		thr = (WorkerThread*)idle_list_.front();
 		printf("Get Idle thread %d \n",thr->get_thread_id());
-		THREAD_MUTEX_UNLOCK(&idle_mutex_);
-		return thr;
 	}
 	THREAD_MUTEX_UNLOCK(&idle_mutex_);
-	return NULL;
+	return thr;
 }
 void ThreadPool::AppendToIdleList(WorkerThread* worker_thread)
 {

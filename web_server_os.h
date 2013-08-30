@@ -6,6 +6,8 @@
 #include <string>
 #include <cstdio>
 #include <assert.h>
+#include <io.h>
+#include <ctime>
 #ifdef _MSC_VER
 #pragma comment(lib,"WS2_32")
 #include <WinSock2.h>
@@ -40,7 +42,7 @@ typedef unsigned __int16    uint16_t;
 #define THREAD_MUTEX_LOCK EnterCriticalSection 
 #define THREAD_MUTEX_UNLOCK LeaveCriticalSection
 #define THREAD_MUTEX_INIT(x) InitializeCriticalSection(x)
-#define THREAD_MUTEX_DESTROY(x) DeleteCriticalSection(x);
+#define THREAD_MUTEX_DESTROY(x) DeleteCriticalSection(x)
 #else
 #define THREAD_MUTEX_T pthread_mutex_t
 #define THREAD_MUTEX_LOCK pthread_mutex_lock
@@ -70,6 +72,7 @@ class ServerOs
 public:
 	int Init();
 	static int ThreadCreate(void *start_addr, void *arglist, unsigned *thrdaddr);
+	static int GetFileSize(char *file_name);
 };
 
 class SemaphoreCondition

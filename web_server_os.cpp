@@ -1,5 +1,6 @@
 #include "web_server_os.h"
 #include "web_server_log.h"
+
 int ServerOs::Init()
 {
 #ifdef _MSC_VER
@@ -24,6 +25,15 @@ int ServerOs::ThreadCreate(void *start_addr, void *arglist, unsigned *thrdaddr)
 #endif
 	return 0;
 }
+int ServerOs::GetFileSize(char *file_name)
+{
+	FILE* fp = fopen(file_name, "r");
+	if (fp == NULL) return 0;
+	fseek(fp, 0L, SEEK_END);
+	return ftell(fp); 
+}
+
+
 SemaphoreCondition::SemaphoreCondition()
 {
 	Semaphore_ = CreateSemaphore(NULL, 0, 100, NULL);
